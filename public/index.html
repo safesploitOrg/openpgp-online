@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="no-referrer">
+    <title>OpenPGP Online</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="assets/js/openpgp_6.3.1/openpgp.min.js" defer></script>
+    <script type="module" src="assets/js/app.js"></script>
+  </head>
+  <body>
+    <main class="shell">
+      <header class="page-header">
+        <p class="eyebrow">Local-only encryption</p>
+        <h1>OpenPGP Online</h1>
+        <p>Encrypt a message for one or more recipients without sending it to an application server.</p>
+      </header>
+
+      <aside class="notice" aria-labelledby="trust-heading">
+        <h2 id="trust-heading">Understand the trust boundary</h2>
+        <p>Encryption happens in this browser, but you must still trust the page, device, browser extensions, and hosting path. Public-key encryption does not require your private key.</p>
+      </aside>
+
+      <form id="encryption-form" autocomplete="off" novalidate>
+        <section class="card" aria-labelledby="message-heading">
+          <div class="section-heading">
+            <span class="step">1</span>
+            <div>
+              <h2 id="message-heading">Message</h2>
+              <p>Enter the plaintext you want to encrypt.</p>
+            </div>
+          </div>
+          <label for="message">Message to encrypt</label>
+          <textarea id="message" name="message" rows="7" required spellcheck="true"></textarea>
+        </section>
+
+        <section class="card" aria-labelledby="recipients-heading">
+          <div class="section-heading">
+            <span class="step">2</span>
+            <div>
+              <h2 id="recipients-heading">Recipients</h2>
+              <p>Add an ASCII-armoured public key for every intended recipient.</p>
+            </div>
+          </div>
+          <div id="public-keys"></div>
+          <button id="add-public-key" class="button button-secondary" type="button">Add another recipient</button>
+        </section>
+
+        <section class="card" aria-labelledby="signing-heading">
+          <div class="section-heading">
+            <span class="step">3</span>
+            <div>
+              <h2 id="signing-heading">Signing (optional)</h2>
+              <p>Signing proves who created the message, but requires a private key.</p>
+            </div>
+          </div>
+          <button id="toggle-signing" class="button button-secondary" type="button" aria-expanded="false" aria-controls="signing-fields">Enable signing</button>
+          <div id="signing-fields" hidden>
+            <div class="danger-note" role="note">
+              <strong>Private-key warning:</strong> only continue if you have independently verified this application. Prefer a dedicated, low-value signing key.
+            </div>
+            <label for="private-key">ASCII-armoured private key</label>
+            <textarea id="private-key" name="private-key" rows="6" autocomplete="off" spellcheck="false"></textarea>
+            <label for="passphrase">Private-key passphrase</label>
+            <input id="passphrase" name="passphrase" type="password" autocomplete="new-password">
+          </div>
+        </section>
+
+        <div id="status" class="status" role="status" aria-live="polite" tabindex="-1" hidden></div>
+
+        <div class="actions">
+          <button id="encrypt-button" class="button button-primary" type="submit">Encrypt message</button>
+          <button id="clear" class="button button-quiet" type="button">Clear sensitive data</button>
+        </div>
+      </form>
+
+      <section id="result" class="card result" aria-labelledby="result-heading" hidden>
+        <div class="section-heading">
+          <span class="step step-complete">✓</span>
+          <div>
+            <h2 id="result-heading">Encrypted message</h2>
+            <p>Copy the complete armoured message, including its begin and end lines.</p>
+          </div>
+        </div>
+        <label for="output">ASCII-armoured ciphertext</label>
+        <textarea id="output" rows="12" readonly spellcheck="false"></textarea>
+        <button id="copy" class="button button-secondary" type="button">Copy ciphertext</button>
+      </section>
+
+      <footer>
+        <p>OpenPGP.js Web-app - 
+          <a href="https://github.com/safesploitOrg/openpgp-online" target="_blank" rel="noopener noreferrer">GitHub</a>
+        </p>
+      </footer>
+    </main>
+
+    <template id="recipient-template">
+      <fieldset class="recipient">
+        <legend>Recipient <span data-recipient-number></span></legend>
+        <label>ASCII-armoured public key
+          <textarea data-public-key rows="7" required autocomplete="off" spellcheck="false" placeholder="-----BEGIN PGP PUBLIC KEY BLOCK-----"></textarea>
+        </label>
+        <button class="button button-quiet" data-remove-recipient type="button">Remove recipient</button>
+      </fieldset>
+    </template>
+  </body>
+</html>
